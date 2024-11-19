@@ -1,18 +1,23 @@
-import React from 'react'
-import './App.css'
-import ThreeScene from './components/ThreeScene'
-import { AboutMePage } from './components/aboutMePage/AboutMePage'
+import React from 'react';
+import './App.css';
+import { ThreeScene } from './components/ThreeScene';
+import { AboutMePage } from './components/aboutMePage/AboutMePage';
+import { AboutThisProjectPage } from './components/aboutThisProjectPage/AboutThisProjectPage';
 
 function App() {
-
-  const [displayMePage, setDisplayMePage] = React.useState(false)
+  const [displayAboutMePage, setDisplayAboutMePage] = React.useState(false);
+  const [displayAboutThisProjectPage, setDisplayAboutThisProjectPage] = React.useState(false);
 
   return (
-    <div className='test'>
-      <AboutMePage display={displayMePage} />
-      <ThreeScene />
+    <div className='app'>
+      <AboutThisProjectPage display={displayAboutThisProjectPage} closePage={() => { setDisplayAboutThisProjectPage(false) }} />
+      <AboutMePage display={displayAboutMePage} closePage={() => { setDisplayAboutMePage(false) }} />
+      <ThreeScene
+        setDisplayAboutMePage={setDisplayAboutMePage}
+        setDisplayAboutThisProjectPage={setDisplayAboutThisProjectPage}
+      />
     </div>
-  )
+  );
 }
 
-export default App
+export default App;

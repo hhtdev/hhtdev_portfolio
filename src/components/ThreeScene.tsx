@@ -2,11 +2,17 @@ import React, { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
+interface ThreeSceneProps {
+  setDisplayAboutMePage: (display: boolean) => void;
+  setDisplayAboutThisProjectPage: (display: boolean) => void;
+}
 
-const ThreeScene: React.FC = () => {
+export const ThreeScene = React.memo((props: ThreeSceneProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
+  const animationFrameId = useRef<number | null>(null);
   const scene = React.useMemo(() => new THREE.Scene(), []);
   const camera = React.useMemo(() => new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000), []);
+  camera.position.set(30, 0, 0);
   const renderer = React.useMemo(() => new THREE.WebGLRenderer({ antialias: true }), []);
 
   const earthDistance = 50;
@@ -35,7 +41,7 @@ const ThreeScene: React.FC = () => {
   const mouse = React.useMemo(() => new THREE.Vector2(), []);
   const raycaster = React.useMemo(() => new THREE.Raycaster(), []);
 
-  const sunLight = React.useMemo(() => new THREE.PointLight(0xffffff, 2000, 0), []);
+  const sunLight = React.useMemo(() => new THREE.PointLight(0xffffff, 1500, 0), []);
 
   const handleResize = React.useCallback(() => {
     const width = window.innerWidth;
@@ -48,25 +54,25 @@ const ThreeScene: React.FC = () => {
   }, [camera, renderer]);
 
   const updateMeshHoverEmissiveColor = React.useCallback((meshName: string, emissive: boolean, color: number) => {
+    containerRef.current?.style.setProperty('cursor', emissive ? 'pointer' : 'default');
     switch (meshName) {
       case 'earthAtmosphere':
         earthAtmosphereMesh.material.color.setHex(color);
         earthAtmosphereMesh.material.emissive.setHex(color);
         earthAtmosphereMesh.material.emissive = emissive ? new THREE.Color(0x00b3ff) : new THREE.Color(0x000000);
         break;
+      case 'sun':
+        break;
       default:
         break;
     }
   }, [earthAtmosphereMesh.material]);
 
-
-
   const animate = React.useCallback(() => {
-    requestAnimationFrame(animate);
-    earthMesh.rotation.y += 0.001;
-    earthCloudsMesh.rotation.y += 0.0017;
+    animationFrameId.current = requestAnimationFrame(animate);
+    // earthMesh.rotation.y += 0.001;
+    // earthCloudsMesh.rotation.y += 0.0017;
 
-    //Earth meshes orbits
     earthMesh.position.x = earthDistance * Math.cos(earthMesh.rotation.y);
     earthMesh.position.z = earthDistance * Math.sin(earthMesh.rotation.y);
     earthCloudsMesh.position.x = earthDistance * Math.cos(earthMesh.rotation.y);
@@ -74,11 +80,13 @@ const ThreeScene: React.FC = () => {
     earthAtmosphereMesh.position.x = earthDistance * Math.cos(earthMesh.rotation.y);
     earthAtmosphereMesh.position.z = earthDistance * Math.sin(earthMesh.rotation.y);
 
+    if (camera.parent === earthMesh) {
+      camera.lookAt(earthMesh.position);
+    }
+
     controls.update();
     renderer.render(scene, camera);
   }, [camera, controls, earthAtmosphereMesh.position, earthCloudsMesh.position, earthCloudsMesh.rotation, earthMesh.position, earthMesh.rotation, renderer, scene]);
-
-
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -86,61 +94,37 @@ const ThreeScene: React.FC = () => {
       renderer.shadowMap.enabled = true;
       containerRef.current?.appendChild(renderer.domElement);
 
-      // Camera distance from planet
-      camera.position.z = 60;
-      camera.position.x = 0;
-
-      // Add inertia
       controls.enableDamping = true;
       controls.dampingFactor = 0.05;
-
-      // Lock panning
       controls.enablePan = false;
 
-      // Lock camera rotation to the y axis
-      // controls.minPolarAngle = Math.PI / 2;
-      // controls.maxPolarAngle = Math.PI / 2;
-
-      //Lock camera distance
-      // controls.minDistance = 5;
-      // controls.maxDistance = 5;
-
-      //Sun Mesh
       sunMesh.scale.set(10, 10, 10);
 
-      //Planet mesh render order
       earthMesh.renderOrder = 0;
       earthCloudsMesh.renderOrder = 1;
 
-      // Planet inclination
       earthMesh.rotation.x = 0.23;
       earthCloudsMesh.rotation.x = 0.23;
 
-      // Orbits
       earthMesh.position.x = earthDistance;
       earthCloudsMesh.position.x = earthDistance;
       earthAtmosphereMesh.position.x = earthDistance;
 
-      //Milky way inclination
       starBackgroundMesh.rotation.x = 60.2;
 
-      // Enable shadows
       earthMesh.castShadow = true;
       earthCloudsMesh.castShadow = true;
       earthMesh.receiveShadow = true;
       earthCloudsMesh.receiveShadow = true;
       sunLight.castShadow = true;
 
-      // Add light
       sunMesh.add(sunLight);
 
-      // Name objects
       earthMesh.name = 'earth';
       earthCloudsMesh.name = 'earthClouds';
       earthAtmosphereMesh.name = 'earthAtmosphere';
       sunMesh.name = 'sun';
 
-      //Add objects to scene
       scene.add(sunLight);
       scene.add(earthMesh);
       scene.add(earthCloudsMesh);
@@ -150,11 +134,10 @@ const ThreeScene: React.FC = () => {
       animate();
 
       let previousObject = '';
-      window.addEventListener('mousemove', (event) => {
+      const handleMouseMove = (event: MouseEvent) => {
         mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
         mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
         raycaster.setFromCamera(mouse, camera);
-        //Ignore stars background mesh
         const sceneChildrensWithoutStars = scene.children.filter(child => child !== starBackgroundMesh);
         const intersects = raycaster.intersectObjects(sceneChildrensWithoutStars);
 
@@ -169,9 +152,9 @@ const ThreeScene: React.FC = () => {
           updateMeshHoverEmissiveColor(intersects[0].object.name, true, 0xffffff);
           previousObject = intersects[0].object.name;
         }
-      });
+      };
 
-      window.addEventListener('click', (event) => {
+      const handleClick = (event: MouseEvent) => {
         mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
         mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
         raycaster.setFromCamera(mouse, camera);
@@ -180,27 +163,38 @@ const ThreeScene: React.FC = () => {
           switch (intersects[0].object.name) {
             case 'earthAtmosphere':
               console.log('Earth clicked');
+              earthMesh.add(camera);
+              props.setDisplayAboutMePage(true);
               break;
             case 'sun':
               console.log('Sun clicked');
+              props.setDisplayAboutThisProjectPage(true);
+              sunMesh.add(camera);
+              controls.target.copy(sunMesh.position);
+              controls.update();
               break;
             default:
               break;
           }
         }
-      });
+      };
 
+      window.addEventListener('mousemove', handleMouseMove);
+      window.addEventListener('click', handleClick);
       window.addEventListener('resize', handleResize);
-      // Clean up the event listener when the component is unmounted
+
       return () => {
+        if (animationFrameId.current) {
+          cancelAnimationFrame(animationFrameId.current); //Cleanup the animation frame to prevent doubke rendering
+        }
+        window.removeEventListener('mousemove', handleMouseMove);
+        window.removeEventListener('click', handleClick);
         window.removeEventListener('resize', handleResize);
       };
     }
-  }, [renderer, scene, camera, controls, earthMesh, earthCloudsMesh, earthAtmosphereMesh, starBackgroundMesh, mouse, raycaster, handleResize, animate, updateMeshHoverEmissiveColor, sunMesh, sunLight]);
+  }, [renderer, scene, camera, controls, earthMesh, earthCloudsMesh, earthAtmosphereMesh, starBackgroundMesh, mouse, raycaster, handleResize, animate, updateMeshHoverEmissiveColor, sunMesh, sunLight, props]);
 
   return (
     <div ref={containerRef} />
   );
-};
-
-export default ThreeScene;
+});
