@@ -8,11 +8,12 @@ interface ThreeSceneProps {
 }
 
 export const ThreeScene = React.memo((props: ThreeSceneProps) => {
+
   const containerRef = useRef<HTMLDivElement>(null);
   const animationFrameId = useRef<number | null>(null);
   const scene = React.useMemo(() => new THREE.Scene(), []);
   const camera = React.useMemo(() => new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000), []);
-  camera.position.set(30, 0, 0);
+  camera.position.set(40, 0, 0);
   const renderer = React.useMemo(() => new THREE.WebGLRenderer({ antialias: true }), []);
 
   const earthDistance = 50;
@@ -43,6 +44,14 @@ export const ThreeScene = React.memo((props: ThreeSceneProps) => {
 
   const sunLight = React.useMemo(() => new THREE.PointLight(0xffffff, 1500, 0), []);
 
+  const isFollowingEarth = React.useRef(false);
+  const isFollowingSun = React.useRef(false);
+  const userControlActive = React.useRef(false);
+
+  const sunCameraDistance = 40;
+  const earthCameraDistance = 3;
+
+
   const handleResize = React.useCallback(() => {
     const width = window.innerWidth;
     const height = window.innerHeight;
@@ -68,11 +77,14 @@ export const ThreeScene = React.memo((props: ThreeSceneProps) => {
     }
   }, [earthAtmosphereMesh.material]);
 
+  // In the animate function, replace the Sun following code:
+
   const animate = React.useCallback(() => {
     animationFrameId.current = requestAnimationFrame(animate);
-    // earthMesh.rotation.y += 0.001;
-    // earthCloudsMesh.rotation.y += 0.0017;
+    earthMesh.rotation.y += 0.001;
+    earthCloudsMesh.rotation.y += 0.0017;
 
+    // Update Earth position
     earthMesh.position.x = earthDistance * Math.cos(earthMesh.rotation.y);
     earthMesh.position.z = earthDistance * Math.sin(earthMesh.rotation.y);
     earthCloudsMesh.position.x = earthDistance * Math.cos(earthMesh.rotation.y);
@@ -80,13 +92,22 @@ export const ThreeScene = React.memo((props: ThreeSceneProps) => {
     earthAtmosphereMesh.position.x = earthDistance * Math.cos(earthMesh.rotation.y);
     earthAtmosphereMesh.position.z = earthDistance * Math.sin(earthMesh.rotation.y);
 
-    if (camera.parent === earthMesh) {
-      camera.lookAt(earthMesh.position);
+    // Always update camera position if following, even during user control
+    if (isFollowingSun.current) {
+      // Keep the same relative position while following Sun
+      const offset = camera.position.clone().sub(controls.target).normalize().multiplyScalar(sunCameraDistance);
+      controls.target.copy(sunMesh.position);
+      camera.position.copy(sunMesh.position.clone().add(offset));
+    } else if (isFollowingEarth.current) {
+      // Keep the same relative position while following Earth
+      const offset = camera.position.clone().sub(controls.target).normalize().multiplyScalar(earthCameraDistance);
+      controls.target.copy(earthMesh.position);
+      camera.position.copy(earthMesh.position.clone().add(offset));
     }
 
     controls.update();
     renderer.render(scene, camera);
-  }, [camera, controls, earthAtmosphereMesh.position, earthCloudsMesh.position, earthCloudsMesh.rotation, earthMesh.position, earthMesh.rotation, renderer, scene]);
+  }, [camera, controls, earthAtmosphereMesh.position, earthCloudsMesh.position, earthCloudsMesh.rotation, earthMesh.position, earthMesh.rotation, renderer, scene, sunMesh.position]);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -154,6 +175,23 @@ export const ThreeScene = React.memo((props: ThreeSceneProps) => {
         }
       };
 
+      controls.addEventListener('start', () => {
+        userControlActive.current = true;
+      });
+
+      controls.addEventListener('end', () => {
+        userControlActive.current = false;
+        // Save the relative position from the target when user stops dragging
+        if (isFollowingEarth.current) {
+          const relativePosition = camera.position.clone().sub(earthMesh.position);
+          camera.position.copy(earthMesh.position.clone().add(relativePosition));
+        } else if (isFollowingSun.current) {
+          const relativePosition = camera.position.clone().sub(sunMesh.position);
+          camera.position.copy(sunMesh.position.clone().add(relativePosition));
+        }
+      });
+
+
       const handleClick = (event: MouseEvent) => {
         mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
         mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
@@ -163,15 +201,15 @@ export const ThreeScene = React.memo((props: ThreeSceneProps) => {
           switch (intersects[0].object.name) {
             case 'earthAtmosphere':
               console.log('Earth clicked');
-              earthMesh.add(camera);
-              props.setDisplayAboutMePage(true);
+              isFollowingEarth.current = !isFollowingEarth.current;
+              isFollowingSun.current = false;
+              //props.setDisplayAboutMePage(true);
               break;
             case 'sun':
               console.log('Sun clicked');
-              props.setDisplayAboutThisProjectPage(true);
-              sunMesh.add(camera);
-              controls.target.copy(sunMesh.position);
-              controls.update();
+              isFollowingSun.current = !isFollowingSun.current;
+              isFollowingEarth.current = false;
+              //props.setDisplayAboutThisProjectPage(true);
               break;
             default:
               break;
