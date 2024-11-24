@@ -103,6 +103,10 @@ export const ThreeScene = React.memo((props: ThreeSceneProps) => {
       const offset = camera.position.clone().sub(controls.target).normalize().multiplyScalar(earthCameraDistance);
       controls.target.copy(earthMesh.position);
       camera.position.copy(earthMesh.position.clone().add(offset));
+    } else {
+      //When the focus is not on anything in particular, the camera is free (remove all content from pages)
+      props.setDisplayAboutMePage(false);
+      props.setDisplayAboutThisProjectPage(false);
     }
 
     controls.update();
@@ -201,13 +205,13 @@ export const ThreeScene = React.memo((props: ThreeSceneProps) => {
           switch (intersects[0].object.name) {
             case 'earthAtmosphere':
               console.log('Earth clicked');
-              isFollowingEarth.current = !isFollowingEarth.current;
+              isFollowingEarth.current = true;
               isFollowingSun.current = false;
-              //props.setDisplayAboutMePage(true);
+              props.setDisplayAboutMePage(true);
               break;
             case 'sun':
               console.log('Sun clicked');
-              isFollowingSun.current = !isFollowingSun.current;
+              isFollowingSun.current = true;
               isFollowingEarth.current = false;
               //props.setDisplayAboutThisProjectPage(true);
               break;

@@ -1,6 +1,71 @@
-.container-page-about-me {
-  display: none;
-  color: red;
-  z-index: 10;
-  position: absolute;
+@media screen and (min-width: 768px) {
+  .container-page-about-me {
+    color: red;
+    z-index: 10;
+    position: absolute;
+
+    .grid-container-about-me {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+
+      .container-page-about-me-content-left {
+        grid-area: 1 / 1 / 2 / 2;
+        max-height: 100vh;
+        overflow-y: auto;
+      }
+
+      .container-page-about-me-content-right {
+        grid-area: 1 / 3 / 2 / 4;
+        max-height: 100vh;
+        overflow-y: auto;
+      }
+
+      .container-btn-return-orbit-earth {
+        grid-area: 1 / 2 / 2 / 3;
+        display: flex;
+        justify-content: center;
+        align-items: flex-end;
+        margin-bottom: 10px;
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .container-page-about-me {
+    color: red;
+    z-index: 10;
+    position: absolute;
+    height: 100vh;
+    overflow-x: scroll;
+
+    .grid-container-about-me {
+      display: grid;
+      grid-template-columns: repeat(3, 1);
+      grid-auto-rows: max-content;
+
+      .container-page-about-me-content-left {
+        grid-area: 1 / 1 / 2 / 2;
+      }
+
+      .container-page-about-me-content-right {
+        grid-area: 2 / 1 / 3 / 2;
+      }
+
+      .container-btn-return-orbit-earth {
+        grid-area: 3 / 1 / 4 / 2;
+        display: flex;
+        position: sticky;
+        bottom: 10px;
+        margin-right: 10px;
+        justify-content: end;
+
+        .btn-scanner-earth {
+          width: 50px;
+          height: 50px;
+        }
+      }
+    }
+  }
+
 }
