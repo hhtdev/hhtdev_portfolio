@@ -20,6 +20,7 @@ export const BackToOrbitComponent: React.FC<BackToOrbitComponentProps> = (BackTo
   }, [BackToOrbitComponentProps.display]);
 
   //TODO: Instead of returning an img i could return the button with a click event
+  //TODO: Change the img for a more effective svg
   return (
     <img className="back-to-orbit-img" src="back-to-orbit.png" alt="Back to orbit !" />
   );

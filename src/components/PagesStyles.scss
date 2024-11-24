@@ -5,6 +5,7 @@
   color: rgb(230, 230, 230);
   z-index: 10;
   position: absolute;
+  height: 100dvh;
 }
 
 .containers {
@@ -20,13 +21,13 @@
 
       .containers-pages-content-left {
         grid-area: 1 / 1 / 2 / 2;
-        max-height: 100vh;
+        max-height: 100dvh;
         overflow-y: auto;
       }
 
       .containers-pages-content-right {
         grid-area: 1 / 3 / 2 / 4;
-        max-height: 100vh;
+        max-height: 100dvh;
         overflow-y: auto;
       }
 
@@ -49,10 +50,9 @@
 
 @media screen and (max-width: 768px) {
   .containers-pages {
-    height: 100vh;
-    overflow: auto;
-
     .containers-pages-grid {
+      height: 100dvh;
+      overflow-y: auto;
       display: grid;
       grid-template-columns: repeat(3, 1);
       grid-auto-rows: max-content;
@@ -82,4 +82,24 @@
     }
   }
 
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
 }

@@ -93,6 +93,7 @@ export const ThreeScene = React.memo((props: ThreeSceneProps) => {
     earthAtmosphereMesh.position.x = earthDistance * Math.cos(earthMesh.rotation.y);
     earthAtmosphereMesh.position.z = earthDistance * Math.sin(earthMesh.rotation.y);
 
+    //TODO: Add tweening someday
     // Always update camera position if following, even during user control
     if (isFollowingSun.current) {
       // Keep the same relative position while following Sun

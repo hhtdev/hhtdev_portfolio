@@ -13,9 +13,15 @@ export const AboutMePage: React.FC<MeProps> = (MeProps) => {
     const aboutMePage = document.querySelector("#about-me") as HTMLElement;
     if (display) {
       aboutMePage.style.display = "block";
+      aboutMePage.style.animation = "fadeIn 0.5s";
     } else {
-      aboutMePage.style.display = "none";
-      MeProps.closePage();
+      aboutMePage.style.animation = "fadeOut 0.3s";
+      aboutMePage.addEventListener("animationend", (animation) => {
+        if (animation.animationName === "fadeOut") {
+          aboutMePage.style.display = "none";
+          MeProps.closePage();
+        }
+      });
     }
   }, [MeProps]);
 

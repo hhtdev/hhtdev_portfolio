@@ -9,13 +9,20 @@ interface AboutThisProjectProps {
 }
 
 export const AboutThisProjectPage: React.FC<AboutThisProjectProps> = (AboutThisProjectProps) => {
+  //TODO: Could probably create a service to handle the display of all the pages
   const displayPageContent = React.useCallback((display: boolean) => {
     const aboutThisProjectPage = document.querySelector("#about-project") as HTMLElement;
     if (display) {
       aboutThisProjectPage.style.display = "block";
+      aboutThisProjectPage.style.animation = "fadeIn 0.5s";
     } else {
-      aboutThisProjectPage.style.display = "none";
-      AboutThisProjectProps.closePage();
+      aboutThisProjectPage.style.animation = "fadeOut 0.3s";
+      aboutThisProjectPage.addEventListener("animationend", (animation) => {
+        if (animation.animationName === "fadeOut") {
+          aboutThisProjectPage.style.display = "none";
+          AboutThisProjectProps.closePage();
+        }
+      });
     }
   }, [AboutThisProjectProps]);
 
