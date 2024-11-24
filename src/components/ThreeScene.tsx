@@ -83,6 +83,7 @@ export const ThreeScene = React.memo((props: ThreeSceneProps) => {
     animationFrameId.current = requestAnimationFrame(animate);
     earthMesh.rotation.y += 0.001;
     earthCloudsMesh.rotation.y += 0.0017;
+    sunMesh.rotation.y += 0.0005;
 
     // Update Earth position
     earthMesh.position.x = earthDistance * Math.cos(earthMesh.rotation.y);
@@ -213,7 +214,7 @@ export const ThreeScene = React.memo((props: ThreeSceneProps) => {
               console.log('Sun clicked');
               isFollowingSun.current = true;
               isFollowingEarth.current = false;
-              //props.setDisplayAboutThisProjectPage(true);
+              props.setDisplayAboutThisProjectPage(true);
               break;
             default:
               break;

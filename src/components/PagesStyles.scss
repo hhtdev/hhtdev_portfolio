@@ -1,0 +1,85 @@
+//Common styles between pages
+
+.containers-pages {
+  display: none; // default behavior
+  color: rgb(230, 230, 230);
+  z-index: 10;
+  position: absolute;
+}
+
+.containers {
+  padding-left: 1em;
+  padding-right: 1em;
+}
+
+@media screen and (min-width: 768px) {
+  .containers-pages {
+    .containers-pages-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+
+      .containers-pages-content-left {
+        grid-area: 1 / 1 / 2 / 2;
+        max-height: 100vh;
+        overflow-y: auto;
+      }
+
+      .containers-pages-content-right {
+        grid-area: 1 / 3 / 2 / 4;
+        max-height: 100vh;
+        overflow-y: auto;
+      }
+
+      .containers-btn-return-orbit {
+        grid-area: 1 / 2 / 2 / 3;
+        display: flex;
+        justify-content: center;
+        align-items: flex-end;
+        margin-bottom: 10px;
+
+        .btn-return-orbit {
+          width: 50px;
+          height: 50px;
+        }
+      }
+    }
+  }
+}
+
+
+@media screen and (max-width: 768px) {
+  .containers-pages {
+    height: 100vh;
+    overflow: auto;
+
+    .containers-pages-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1);
+      grid-auto-rows: max-content;
+      background-color: rgba(0, 0, 0, 0.7);
+
+      .containers-pages-content-left {
+        grid-area: 1 / 1 / 2 / 2;
+      }
+
+      .containers-pages-content-right {
+        grid-area: 2 / 1 / 3 / 2;
+      }
+
+      .containers-btn-return-orbit {
+        grid-area: 3 / 1 / 4 / 2;
+        display: flex;
+        position: sticky;
+        bottom: 10px;
+        margin-right: 10px;
+        justify-content: end;
+
+        .btn-return-orbit {
+          width: 50px;
+          height: 50px;
+        }
+      }
+    }
+  }
+
+}

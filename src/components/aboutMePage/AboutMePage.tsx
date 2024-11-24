@@ -10,7 +10,7 @@ interface MeProps {
 export const AboutMePage: React.FC<MeProps> = (MeProps) => {
 
   const displayPageContent = React.useCallback((display: boolean) => {
-    const aboutMePage = document.querySelector(".container-page-about-me") as HTMLElement;
+    const aboutMePage = document.querySelector("#about-me") as HTMLElement;
     if (display) {
       aboutMePage.style.display = "block";
     } else {
@@ -24,9 +24,9 @@ export const AboutMePage: React.FC<MeProps> = (MeProps) => {
   }, [MeProps.display, displayPageContent]);
 
   return (
-    <div className="container-page-about-me">
-      <div className="grid-container-about-me">
-        <div className="container-page-about-me-content-left">
+    <div id="about-me" className="containers-pages">
+      <div className="containers-pages-grid">
+        <div className="containers-pages-content-left containers">
           <h1>Le H c'est le S, j'sors le RS</h1>
           <h2>Ouais alors ça marche ou quoi ?</h2>
           <p>
@@ -55,7 +55,7 @@ export const AboutMePage: React.FC<MeProps> = (MeProps) => {
             Et aussi une belle animation pour l'ouverture et la fermeture de la page.
           </p>
         </div>
-        <div className="container-page-about-me-content-right">
+        <div className="containers-pages-content-right containers">
           <h1>LE CONTENUE A DROITE</h1>
           <h2>TA VU ?</h2>
           <p>
@@ -74,8 +74,8 @@ export const AboutMePage: React.FC<MeProps> = (MeProps) => {
             Et aussi une belle animation pour l'ouverture et la fermeture de la page.
           </p>
         </div>
-        <div className="container-btn-return-orbit-earth">
-          <button className="btn-scanner-earth" onClick={() => { displayPageContent(false) }}><BackToOrbitComponent display={true} /></button>
+        <div className="containers-btn-return-orbit">
+          <button className="btn-return-orbit" onClick={() => { displayPageContent(false) }}><BackToOrbitComponent display={true} /></button>
         </div>
       </div>
     </div>
