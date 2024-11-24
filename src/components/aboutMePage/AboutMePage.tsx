@@ -33,52 +33,42 @@ export const AboutMePage: React.FC<MeProps> = (MeProps) => {
     <div id="about-me" className="containers-pages">
       <div className="containers-pages-grid">
         <div className="containers-pages-content-left containers">
-          <h1>Le H c'est le S, j'sors le RS</h1>
-          <h2>Ouais alors ça marche ou quoi ?</h2>
+          <h1>Le dev derrière ce portfolio</h1>
+          <h2>Présentation rapide</h2>
           <p>
-            Oui ça à l'air de fonctionner, je peux donc utiliser mes pages comme des overlays.
-            C'est cool, du coup il faudra que je fasse un peu de style pour que ça ressemble à quelque chose.
-            Et aussi une belle animation pour l'ouverture et la fermeture de la page.
+            Hugo bla bla bla, il est dev tavu. Probablement moyen de glisser une petite photo ici
+          </p>
+          <h2>Ce que la garçon aime bien dans la vie</h2>
+          <p>
+            Plein de trucs à dire ici, à commencer par le dev évidemment
           </p>
           <p>
-            Oui ça à l'air de fonctionner, je peux donc utiliser mes pages comme des overlays.
-            C'est cool, du coup il faudra que je fasse un peu de style pour que ça ressemble à quelque chose.
-            Et aussi une belle animation pour l'ouverture et la fermeture de la page.
+            Il aime aussi l'espace de manière évidente
           </p>
           <p>
-            Oui ça à l'air de fonctionner, je peux donc utiliser mes pages comme des overlays.
-            C'est cool, du coup il faudra que je fasse un peu de style pour que ça ressemble à quelque chose.
-            Et aussi une belle animation pour l'ouverture et la fermeture de la page.
+            Il aime aussi les jeux vidéos, hyepr original hein ?
           </p>
           <p>
-            Oui ça à l'air de fonctionner, je peux donc utiliser mes pages comme des overlays.
-            C'est cool, du coup il faudra que je fasse un peu de style pour que ça ressemble à quelque chose.
-            Et aussi une belle animation pour l'ouverture et la fermeture de la page.
-          </p>
-          <p>
-            Oui ça à l'air de fonctionner, je peux donc utiliser mes pages comme des overlays.
-            C'est cool, du coup il faudra que je fasse un peu de style pour que ça ressemble à quelque chose.
-            Et aussi une belle animation pour l'ouverture et la fermeture de la page.
+            On parle pas en mal de Baldur's gate 3 svp
           </p>
         </div>
         <div className="containers-pages-content-right containers">
-          <h1>LE CONTENUE A DROITE</h1>
-          <h2>TA VU ?</h2>
+          <h1>Il intervient beaucoup auprès des étudiants</h1>
+          <h2>En tant que jury</h2>
           <p>
-            Oui ça à l'air de fonctionner, je peux donc utiliser mes pages comme des overlays.
-            C'est cool, du coup il faudra que je fasse un peu de style pour que ça ressemble à quelque chose.
-            Et aussi une belle animation pour l'ouverture et la fermeture de la page.
+            BTS sio
           </p>
           <p>
-            Oui ça à l'air de fonctionner, je peux donc utiliser mes pages comme des overlays.
-            C'est cool, du coup il faudra que je fasse un peu de style pour que ça ressemble à quelque chose.
-            Et aussi une belle animation pour l'ouverture et la fermeture de la page.
+            CDA
           </p>
           <p>
-            Oui ça à l'air de fonctionner, je peux donc utiliser mes pages comme des overlays.
-            C'est cool, du coup il faudra que je fasse un peu de style pour que ça ressemble à quelque chose.
-            Et aussi une belle animation pour l'ouverture et la fermeture de la page.
+            Et il aimerait bien faire passer des master aussi !
           </p>
+          <h2>Pour des simu d'entretien </h2>
+          <p>Avec Ada techschool notamment</p>
+          <h2>Il présente son métier</h2>
+          <p>Comme dans son ancien campus</p>
+          <p>Mais aussi quand il s'adresse à d'autres dev comme là avec son tech lunch sur les outils d'IA à destination des devs</p>
         </div>
         <div className="containers-btn-return-orbit">
           <button className="btn-return-orbit" onClick={() => { displayPageContent(false) }}><BackToOrbitComponent display={true} /></button>

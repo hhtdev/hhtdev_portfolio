@@ -12,7 +12,7 @@ export const ThreeScene = React.memo((props: ThreeSceneProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const animationFrameId = useRef<number | null>(null);
   const scene = React.useMemo(() => new THREE.Scene(), []);
-  const camera = React.useMemo(() => new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000), []);
+  const camera = React.useMemo(() => new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 5000), []);
   camera.position.set(40, 0, 0);
   const renderer = React.useMemo(() => new THREE.WebGLRenderer({ antialias: true }), []);
 
@@ -20,7 +20,7 @@ export const ThreeScene = React.memo((props: ThreeSceneProps) => {
 
   const planetGeometry = React.useMemo(() => new THREE.SphereGeometry(1, 64, 64), []);
   const planetAtmosphereGeometry = React.useMemo(() => new THREE.SphereGeometry(1.01, 64, 64), []);
-  const starBackgroundGeometry = React.useMemo(() => new THREE.SphereGeometry(90, 128, 128), []);
+  const starBackgroundGeometry = React.useMemo(() => new THREE.SphereGeometry(500, 90, 90), []);
 
   const earthTexture = new THREE.TextureLoader().load("earth.jpg");
   const earthCloudsTexture = new THREE.TextureLoader().load("earth-clouds.png");

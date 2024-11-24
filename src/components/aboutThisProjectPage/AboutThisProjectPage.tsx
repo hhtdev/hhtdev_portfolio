@@ -33,51 +33,43 @@ export const AboutThisProjectPage: React.FC<AboutThisProjectProps> = (AboutThisP
     <div id="about-project" className="containers-pages">
       <div className="containers-pages-grid">
         <div className="containers-pages-content-left containers">
-          <h1>Le H c'est le S, j'sors le RS</h1>
-          <h2>Ouais alors ça marche ou quoi ?</h2>
+          <h1>Ici on parle du portfolio</h1>
+          <h2>Cliquez et naviguez</h2>
           <p>
-            Oui ça à l'air de fonctionner, je peux donc utiliser mes pages comme des overlays.
-            C'est cool, du coup il faudra que je fasse un peu de style pour que ça ressemble à quelque chose.
-            Et aussi une belle animation pour l'ouverture et la fermeture de la page.
+            En fait c'est tout con, tu clique sur les astres et ça t'emmène sur une page.
           </p>
           <p>
-            Oui ça à l'air de fonctionner, je peux donc utiliser mes pages comme des overlays.
-            C'est cool, du coup il faudra que je fasse un peu de style pour que ça ressemble à quelque chose.
-            Et aussi une belle animation pour l'ouverture et la fermeture de la page.
+            Commence par la Terre, je parlerais de moi, car je suis hyper égo-centré.
+          </p>
+          <p>Ajouter deux ou trois trucs ici</p>
+          <h2>L'idée</h2>
+          <p>
+            Pourquoi ?
           </p>
           <p>
-            Oui ça à l'air de fonctionner, je peux donc utiliser mes pages comme des overlays.
-            C'est cool, du coup il faudra que je fasse un peu de style pour que ça ressemble à quelque chose.
-            Et aussi une belle animation pour l'ouverture et la fermeture de la page.
+            Les techs utilisées
           </p>
           <p>
-            Oui ça à l'air de fonctionner, je peux donc utiliser mes pages comme des overlays.
-            C'est cool, du coup il faudra que je fasse un peu de style pour que ça ressemble à quelque chose.
-            Et aussi une belle animation pour l'ouverture et la fermeture de la page.
-          </p>
-          <p>
-            Oui ça à l'air de fonctionner, je peux donc utiliser mes pages comme des overlays.
-            C'est cool, du coup il faudra que je fasse un peu de style pour que ça ressemble à quelque chose.
-            Et aussi une belle animation pour l'ouverture et la fermeture de la page.
+            Les trucs difficiles à faire
           </p>
         </div>
         <div className="containers-pages-content-right containers">
-          <h1>LE CONTENUE A DROITE</h1>
-          <h2>TA VU ?</h2>
+          <h1>Ne pas hésitez à visiter mes réseaux</h1>
+          <h2>LinkedIn</h2>
           <p>
-            Oui ça à l'air de fonctionner, je peux donc utiliser mes pages comme des overlays.
-            C'est cool, du coup il faudra que je fasse un peu de style pour que ça ressemble à quelque chose.
-            Et aussi une belle animation pour l'ouverture et la fermeture de la page.
+            Le lien ici
           </p>
+          <h2>GitHub</h2>
           <p>
-            Oui ça à l'air de fonctionner, je peux donc utiliser mes pages comme des overlays.
-            C'est cool, du coup il faudra que je fasse un peu de style pour que ça ressemble à quelque chose.
-            Et aussi une belle animation pour l'ouverture et la fermeture de la page.
+            Le lien ici
           </p>
+          <h2>Twitter</h2>
           <p>
-            Oui ça à l'air de fonctionner, je peux donc utiliser mes pages comme des overlays.
-            C'est cool, du coup il faudra que je fasse un peu de style pour que ça ressemble à quelque chose.
-            Et aussi une belle animation pour l'ouverture et la fermeture de la page.
+            Le lien ici (ouais nan peut-être pas en fait)
+          </p>
+          <h2>Mon CV quelque part ici</h2>
+          <p>
+            Le lien ici
           </p>
         </div>
         <div className="containers-btn-return-orbit">
