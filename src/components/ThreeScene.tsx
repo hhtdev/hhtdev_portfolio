@@ -5,9 +5,15 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 interface ThreeSceneProps {
   setDisplayAboutMePage: (display: boolean) => void;
   setDisplayAboutThisProjectPage: (display: boolean) => void;
+  setDisplayPlanetNavigationComponent: (display: boolean) => void;
+  cameraFocus: string;
 }
 
 export const ThreeScene = React.memo((props: ThreeSceneProps) => {
+
+  useEffect(() => {
+    console.log('cameraFocus', props.cameraFocus);
+  }, [props.cameraFocus]);
 
   const containerRef = useRef<HTMLDivElement>(null);
   const animationFrameId = useRef<number | null>(null);

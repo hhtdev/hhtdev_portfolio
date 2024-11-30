@@ -3,6 +3,7 @@ import "./PlanetNavigationComponent.scss";
 
 interface PlanetNavigationComponentProps {
   display: boolean;
+  setCameraFocus: (cameraFocus: string) => void;
 }
 
 const displayComponent = (display: boolean) => {
@@ -19,18 +20,13 @@ export const PlanetNavigationComponent: React.FC<PlanetNavigationComponentProps>
     displayComponent(PlanetNavigationComponentProps.display);
   }, [PlanetNavigationComponentProps.display]);
 
-  //TODO: NOTE A MOI MEME : Tu peux pas faire ça car la DOM va t'empêcher de faire la rotation des astres
-  //TODO: Trouves une solution pour naviguer entre les astres plus facilement sur mobile
-  //TODO: Quand on dézoom, les astres s'affiche en plus grand ?
-  //TODO: Ou alors quand on dézoom, on affiche un menu de navigation ?
-  //TODO: Ou alors quand on dézoom, on fait apparaitres les orbites pour faciliter le clique sur mobile ?
   return (
     <div className="container-planet-navigation-component">
       <div className="container-grid-planet-navigation-component">
-        <div>À propos</div>
-        <div>Hugo</div>
-        <div>Compétences Validée</div>
-        <div>francetravail.io</div>
+        <button onClick={() => PlanetNavigationComponentProps.setCameraFocus("earth")}>Terre</button>
+        <button onClick={() => PlanetNavigationComponentProps.setCameraFocus("sun")}>Mars</button>
+        <button onClick={() => PlanetNavigationComponentProps.setCameraFocus("jupiter")}>Jupiter</button>
+        <button onClick={() => PlanetNavigationComponentProps.setCameraFocus("saturn")}>Saturne</button>
       </div>
     </div>
   );

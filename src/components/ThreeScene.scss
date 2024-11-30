@@ -1,0 +1,30 @@
+.container-scene-threejs {
+  position: relative;
+
+  .main-scene {
+    position: relative;
+    z-index: 1;
+  }
+
+  // .nav-menu {
+  //   position: absolute;
+  //   bottom: 10px;
+  //   z-index: 100;
+  //   display: grid;
+  //   grid-template-columns: repeat(4, 1fr);
+  //   grid-column-gap: 10px;
+
+  //   .nav-button {
+  //     background-color: #fff;
+  //     color: #333;
+  //     padding: 10px;
+  //     border-radius: 5px;
+  //     cursor: pointer;
+  //     transition: background-color 0.3s;
+
+  //     &:hover {
+  //       background-color: #333;
+  //     }
+  //   }
+  // }
+}
