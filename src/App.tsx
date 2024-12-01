@@ -5,8 +5,7 @@ import { AboutMePage } from './components/aboutMePage/AboutMePage';
 import { AboutThisProjectPage } from './components/aboutThisProjectPage/AboutThisProjectPage';
 import { PlanetNavigationComponent } from './components/planetNavigationComponent/PlanetNavigationComponent';
 
-function App() {
-
+const App: React.FC = () => {
   const [displayAboutMePage, setDisplayAboutMePage] = React.useState(false);
   const [displayAboutThisProjectPage, setDisplayAboutThisProjectPage] = React.useState(false);
   const [displayPlanetNavigationComponent, setDisplayPlanetNavigationComponent] = React.useState(true);

@@ -24,7 +24,7 @@ export const PlanetNavigationComponent: React.FC<PlanetNavigationComponentProps>
     <div className="container-planet-navigation-component">
       <div className="container-grid-planet-navigation-component">
         <button onClick={() => PlanetNavigationComponentProps.setCameraFocus("earth")}>Terre</button>
-        <button onClick={() => PlanetNavigationComponentProps.setCameraFocus("sun")}>Mars</button>
+        <button onClick={() => PlanetNavigationComponentProps.setCameraFocus("sun")}>Sun</button>
         <button onClick={() => PlanetNavigationComponentProps.setCameraFocus("jupiter")}>Jupiter</button>
         <button onClick={() => PlanetNavigationComponentProps.setCameraFocus("saturn")}>Saturne</button>
       </div>
