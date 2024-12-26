@@ -27,7 +27,7 @@ export const ThreeScene = React.memo((props: ThreeSceneProps) => {
   // Scene, Camera, Renderer
   const scene = React.useMemo(() => new THREE.Scene(), []);
   const camera = React.useMemo(() => new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 5000), []);
-  camera.position.set(40, 0, 0);
+  camera.position.set(30, 0, 0);
   const renderer = React.useMemo(() => new THREE.WebGLRenderer({ antialias: true }), []);
   const controls = React.useMemo(() => new OrbitControls(camera, renderer.domElement), [camera, renderer.domElement]);
 
@@ -35,8 +35,6 @@ export const ThreeScene = React.memo((props: ThreeSceneProps) => {
   const planetGeometry = React.useMemo(() => new THREE.SphereGeometry(1, 64, 64), []);
   const planetAtmosphereGeometry = React.useMemo(() => new THREE.SphereGeometry(1.01, 64, 64), []);
   const starBackgroundGeometry = React.useMemo(() => new THREE.SphereGeometry(500, 90, 90), []);
-
-
 
   const textures = React.useMemo(() => ({
     mercury: new THREE.TextureLoader().load("mercury.jpg"),
@@ -68,11 +66,18 @@ export const ThreeScene = React.memo((props: ThreeSceneProps) => {
   const marsMesh = React.useMemo(() => new THREE.Mesh(planetGeometry, materials.mars), [planetGeometry, materials.mars]);
   const starBackgroundMesh = React.useMemo(() => new THREE.Mesh(starBackgroundGeometry, materials.stars), [starBackgroundGeometry, materials.stars]);
 
-  const sunLight = React.useMemo(() => new THREE.PointLight(0xffffff, 9500, 0), []);
-  const mercuryDistance = 40;
-  const venusDistance = 70;
-  const earthDistance = 120;
-  const marsDistance = 200;
+  const sunLight = React.useMemo(() => new THREE.PointLight(0xffffff, 20000, 0), []);
+
+  //Distance from the sun divided by 1 000 000
+  const mercuryDistance = 58;
+  const venusDistance = 108;
+  const earthDistance = 150;
+  const marsDistance = 228;
+
+  const mercuryOrbit = useRef(0);
+  const venusOrbit = useRef(0);
+  const earthOrbit = useRef(0);
+  const marsOrbit = useRef(0);
 
   const handleResize = React.useCallback(() => {
     const width = window.innerWidth;
@@ -223,42 +228,54 @@ export const ThreeScene = React.memo((props: ThreeSceneProps) => {
   const animate = React.useCallback(() => {
     animationFrameId.current = requestAnimationFrame(animate);
 
-    // Planet rotation
-    //TODO: Change rotation to counter clockwise of all planets except Venus
-    mercuryMesh.rotation.y -= 0.002;
-    venusMesh.rotation.y -= 0.006;
-    earthMesh.rotation.y -= 0.001;
-    earthCloudsMesh.rotation.y -= 0.0017;
-    sunMesh.rotation.y -= 0.0005;
-    marsMesh.rotation.y -= 0.0008;
+    // Planet rotation on its axis (Venus is a special case)
+    mercuryMesh.rotation.y += 0.00100;
+    venusMesh.rotation.y -= 0.00100;
+    earthMesh.rotation.y += 0.00100;
+    earthCloudsMesh.rotation.y += 0.00200;
+    sunMesh.rotation.y += 0.00100;
+    marsMesh.rotation.y += 0.00100;
 
     //TODO: Create a single function for this
     const updateEarthPosition = (mesh: THREE.Mesh, distance: number) => {
-      mesh.position.x = distance * Math.cos(earthMesh.rotation.y);
-      mesh.position.z = distance * Math.sin(earthMesh.rotation.y);
+      //Actual orbit speed around the sun
+      earthOrbit.current -= 0.000298;
+      mesh.position.x = distance * Math.cos(earthOrbit.current);
+      mesh.position.z = distance * Math.sin(earthOrbit.current);
+    };
+
+    const updateEarthCloudsAndAtmospherePosition = (mesh: THREE.Mesh, distance: number) => {
+      mesh.position.x = distance * Math.cos(earthOrbit.current);
+      mesh.position.z = distance * Math.sin(earthOrbit.current);
     };
 
     const updateMarsPosition = (mesh: THREE.Mesh, distance: number) => {
-      mesh.position.x = distance * Math.cos(marsMesh.rotation.y);
-      mesh.position.z = distance * Math.sin(marsMesh.rotation.y);
+      //Actual orbit speed around the sun
+      marsOrbit.current -= 0.000240;
+      mesh.position.x = distance * Math.cos(marsOrbit.current);
+      mesh.position.z = distance * Math.sin(marsOrbit.current);
     };
 
     const updateMercuryPosition = (mesh: THREE.Mesh, distance: number) => {
-      mesh.position.x = distance * Math.cos(mercuryMesh.rotation.y);
-      mesh.position.z = distance * Math.sin(mercuryMesh.rotation.y);
+      //Actual orbit speed around the sun
+      mercuryOrbit.current -= 0.000479;
+      mesh.position.x = distance * Math.cos(mercuryOrbit.current);
+      mesh.position.z = distance * Math.sin(mercuryOrbit.current);
     };
 
     //Venus is a special case because of its rotation
     const updateVenusPosition = (mesh: THREE.Mesh, distance: number) => {
-      mesh.position.x = distance * Math.cos(venusMesh.rotation.y);
-      mesh.position.z = distance * Math.sin(venusMesh.rotation.y);
+      //Actual orbit speed around the sun
+      venusOrbit.current -= 0.000350;
+      mesh.position.x = distance * Math.cos(venusOrbit.current);
+      mesh.position.z = distance * Math.sin(venusOrbit.current);
     };
 
     updateMercuryPosition(mercuryMesh, mercuryDistance);
     updateVenusPosition(venusMesh, venusDistance);
     updateEarthPosition(earthMesh, earthDistance);
-    updateEarthPosition(earthCloudsMesh, earthDistance);
-    updateEarthPosition(earthAtmosphereMesh, earthDistance);
+    updateEarthCloudsAndAtmospherePosition(earthCloudsMesh, earthDistance);
+    updateEarthCloudsAndAtmospherePosition(earthAtmosphereMesh, earthDistance);
     updateMarsPosition(marsMesh, marsDistance);
 
     // Camera following logic
@@ -303,13 +320,13 @@ export const ThreeScene = React.memo((props: ThreeSceneProps) => {
     earthCloudsMesh.renderOrder = 1;
 
     //TODO: Check this, it feels wrong
-    earthMesh.rotation.x = 0.23;
-    earthCloudsMesh.rotation.x = 0.23;
+    earthMesh.rotation.x = -0.23;
+    earthCloudsMesh.rotation.x = -0.23;
 
-    marsMesh.rotation.x = 0.252;
+    marsMesh.rotation.x = -0.252;
 
-    mercuryMesh.rotation.x = 0.03;
-    venusMesh.rotation.x = 0;
+    mercuryMesh.rotation.x = -0.03;
+    venusMesh.rotation.x = -0;
 
     earthMesh.position.x = earthDistance;
     earthCloudsMesh.position.x = earthDistance;
