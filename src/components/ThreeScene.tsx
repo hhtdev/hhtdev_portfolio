@@ -79,12 +79,14 @@ export const ThreeScene = React.memo((props: ThreeSceneProps) => {
           isFollowingEarth.current = true;
           isFollowingSun.current = false;
           props.setDisplayAboutMePage(true);
+          props.setDisplayPlanetNavigationComponent(false);
           break;
         case 'sun':
           console.log('Sun clicked');
           isFollowingSun.current = true;
           isFollowingEarth.current = false;
           props.setDisplayAboutThisProjectPage(true);
+          props.setDisplayPlanetNavigationComponent(false);
           break;
         default:
           break;
@@ -98,15 +100,20 @@ export const ThreeScene = React.memo((props: ThreeSceneProps) => {
       isFollowingEarth.current = true;
       isFollowingSun.current = false;
       props.setDisplayAboutMePage(true);
+      props.setDisplayAboutThisProjectPage(false);
+      props.setDisplayPlanetNavigationComponent(false);
     } else if (props.cameraFocus === 'sun') {
       isFollowingEarth.current = false;
       isFollowingSun.current = true;
       props.setDisplayAboutThisProjectPage(true);
+      props.setDisplayAboutMePage(false);
+      props.setDisplayPlanetNavigationComponent(false);
     } else {
       isFollowingEarth.current = false;
       isFollowingSun.current = false;
       props.setDisplayAboutMePage(false);
       props.setDisplayAboutThisProjectPage(false);
+      props.setDisplayPlanetNavigationComponent(true);
     }
   }, [props.cameraFocus, props]);
 

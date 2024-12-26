@@ -7,7 +7,7 @@ interface PlanetNavigationComponentProps {
 }
 
 const displayComponent = (display: boolean) => {
-  const planetNavigationComponent = document.querySelector(".back-to-orbit-img") as HTMLElement;
+  const planetNavigationComponent = document.querySelector(".container-planet-navigation-component") as HTMLElement;
   if (display) {
     planetNavigationComponent.style.display = "block";
   } else {
@@ -23,11 +23,11 @@ export const PlanetNavigationComponent: React.FC<PlanetNavigationComponentProps>
   return (
     <div className="container-planet-navigation-component">
       <div className="container-grid-planet-navigation-component">
-        <button onClick={() => PlanetNavigationComponentProps.setCameraFocus("earth")}>Terre</button>
-        <button onClick={() => PlanetNavigationComponentProps.setCameraFocus("sun")}>Sun</button>
-        <button onClick={() => PlanetNavigationComponentProps.setCameraFocus("jupiter")}>Jupiter</button>
-        <button onClick={() => PlanetNavigationComponentProps.setCameraFocus("saturn")}>Saturne</button>
+        <button className="btn-navigation" onClick={() => PlanetNavigationComponentProps.setCameraFocus("earth")}>A propos de moi</button>
+        <button className="btn-navigation" onClick={() => PlanetNavigationComponentProps.setCameraFocus("sun")}>Ce projet</button>
+        <button className="btn-navigation" onClick={() => PlanetNavigationComponentProps.setCameraFocus("jupiter")}>Mes missions</button>
+        <button className="btn-navigation" onClick={() => PlanetNavigationComponentProps.setCameraFocus("saturn")}>Me contacter</button>
       </div>
-    </div>
+    </div >
   );
 };

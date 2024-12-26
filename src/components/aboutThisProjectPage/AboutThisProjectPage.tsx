@@ -52,6 +52,9 @@ export const AboutThisProjectPage: React.FC<AboutThisProjectProps> = (AboutThisP
           <p>
             Les trucs difficiles à faire
           </p>
+          <p>
+            Le projet est destiné à évoluer au fur et à mesure du temps et des missions sur lesquelles je travaille.
+          </p>
         </div>
         <div className="containers-pages-content-right containers">
           <h1>Ne pas hésitez à visiter mes réseaux</h1>

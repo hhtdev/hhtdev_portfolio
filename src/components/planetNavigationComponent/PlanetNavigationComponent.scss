@@ -1,14 +1,23 @@
 .container-planet-navigation-component {
-
   display: flex;
   position: fixed;
   z-index: 10;
   bottom: 10px;
-  margin-right: 10px;
-  justify-content: end;
+  width: 100%;
+  left: 50%;
+  transform: translateX(-50%);
 
   .container-grid-planet-navigation-component {
     display: grid;
+    padding: 10px;
     grid-template-columns: repeat(4, 1fr);
+    grid-column-gap: 10px;
+
+    .btn-navigation {
+      background-color: #fff;
+      color: #333;
+      border-radius: 5px;
+      cursor: pointer;
+    }
   }
 }
