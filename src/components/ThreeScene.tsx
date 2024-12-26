@@ -3,9 +3,12 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
 interface ThreeSceneProps {
+  setDisplayAdemiPage: (display: boolean) => void;
+  setDisplayMichelinPage: (display: boolean) => void;
   setDisplayAboutMePage: (display: boolean) => void;
   setDisplayAboutThisProjectPage: (display: boolean) => void;
   setDisplayPlanetNavigationComponent: (display: boolean) => void;
+  setDisplayFranceTravailPage: (display: boolean) => void;
   cameraFocus: string;
 }
 
@@ -14,8 +17,11 @@ export const ThreeScene = React.memo((props: ThreeSceneProps) => {
   const animationFrameId = useRef<number | null>(null);
 
   // Refs for state management
+  const isFollowingMercury = useRef(false);
+  const isFollowingVenus = useRef(false);
   const isFollowingEarth = useRef(false);
   const isFollowingSun = useRef(false);
+  const isFollowingMars = useRef(false);
   const userControlActive = useRef(false);
 
   // Scene, Camera, Renderer
@@ -33,28 +39,40 @@ export const ThreeScene = React.memo((props: ThreeSceneProps) => {
 
 
   const textures = React.useMemo(() => ({
+    mercury: new THREE.TextureLoader().load("mercury.jpg"),
+    venus: new THREE.TextureLoader().load("venus.jpg"),
     earth: new THREE.TextureLoader().load("earth.jpg"),
     earthClouds: new THREE.TextureLoader().load("earth-clouds.png"),
     sun: new THREE.TextureLoader().load("sun.jpg"),
+    mars: new THREE.TextureLoader().load("mars.jpg"),
     stars: new THREE.TextureLoader().load("8k-stars-milky-way.jpg"),
   }), []);
 
   const materials = React.useMemo(() => ({
+    mercury: new THREE.MeshStandardMaterial({ map: textures.mercury }),
+    venus: new THREE.MeshStandardMaterial({ map: textures.venus }),
     earth: new THREE.MeshStandardMaterial({ map: textures.earth, depthTest: true }),
     clouds: new THREE.MeshStandardMaterial({ map: textures.earthClouds, transparent: true, depthTest: false }),
     atmosphere: new THREE.MeshStandardMaterial({ color: 0x00b3ff, emissive: 0x00b3ff, transparent: true, opacity: 0.1 }),
     sun: new THREE.MeshBasicMaterial({ map: textures.sun }),
+    mars: new THREE.MeshStandardMaterial({ map: textures.mars }),
     stars: new THREE.MeshBasicMaterial({ map: textures.stars, side: THREE.BackSide }),
   }), [textures]);
 
+  const mercuryMesh = React.useMemo(() => new THREE.Mesh(planetGeometry, materials.mercury), [planetGeometry, materials.mercury]);
+  const venusMesh = React.useMemo(() => new THREE.Mesh(planetGeometry, materials.venus), [planetGeometry, materials.venus]);
   const earthMesh = React.useMemo(() => new THREE.Mesh(planetGeometry, materials.earth), [planetGeometry, materials.earth]);
   const earthCloudsMesh = React.useMemo(() => new THREE.Mesh(planetGeometry, materials.clouds), [planetGeometry, materials.clouds]);
   const earthAtmosphereMesh = React.useMemo(() => new THREE.Mesh(planetAtmosphereGeometry, materials.atmosphere), [planetAtmosphereGeometry, materials.atmosphere]);
   const sunMesh = React.useMemo(() => new THREE.Mesh(planetGeometry, materials.sun), [planetGeometry, materials.sun]);
+  const marsMesh = React.useMemo(() => new THREE.Mesh(planetGeometry, materials.mars), [planetGeometry, materials.mars]);
   const starBackgroundMesh = React.useMemo(() => new THREE.Mesh(starBackgroundGeometry, materials.stars), [starBackgroundGeometry, materials.stars]);
 
-  const sunLight = React.useMemo(() => new THREE.PointLight(0xffffff, 1500, 0), []);
-  const earthDistance = 50;
+  const sunLight = React.useMemo(() => new THREE.PointLight(0xffffff, 9500, 0), []);
+  const mercuryDistance = 40;
+  const venusDistance = 70;
+  const earthDistance = 120;
+  const marsDistance = 200;
 
   const handleResize = React.useCallback(() => {
     const width = window.innerWidth;
@@ -74,10 +92,30 @@ export const ThreeScene = React.memo((props: ThreeSceneProps) => {
     if (intersects.length > 0) {
       //TODO: Add tweening someday (maybe)
       switch (intersects[0].object.name) {
+        case 'mercury':
+          console.log('Mercury clicked');
+          isFollowingMercury.current = true;
+          isFollowingVenus.current = false;
+          isFollowingEarth.current = false;
+          isFollowingSun.current = false;
+          props.setDisplayAdemiPage(true);
+          props.setDisplayPlanetNavigationComponent(false);
+          break;
+        case 'venus':
+          console.log('Venus clicked');
+          isFollowingVenus.current = true;
+          isFollowingMercury.current = false;
+          isFollowingEarth.current = false;
+          isFollowingSun.current = false;
+          props.setDisplayMichelinPage(true);
+          props.setDisplayPlanetNavigationComponent(false);
+          break;
         case 'earthAtmosphere':
           console.log('Earth clicked');
           isFollowingEarth.current = true;
           isFollowingSun.current = false;
+          isFollowingMercury.current = false;
+          isFollowingVenus.current = false;
           props.setDisplayAboutMePage(true);
           props.setDisplayPlanetNavigationComponent(false);
           break;
@@ -85,7 +123,17 @@ export const ThreeScene = React.memo((props: ThreeSceneProps) => {
           console.log('Sun clicked');
           isFollowingSun.current = true;
           isFollowingEarth.current = false;
+          isFollowingMercury.current = false;
+          isFollowingVenus.current = false;
           props.setDisplayAboutThisProjectPage(true);
+          props.setDisplayPlanetNavigationComponent(false);
+          break;
+        case 'mars':
+          console.log('Mars clicked');
+          isFollowingMars.current = true;
+          isFollowingSun.current = false;
+          isFollowingEarth.current = false;
+          props.setDisplayFranceTravailPage(true);
           props.setDisplayPlanetNavigationComponent(false);
           break;
         default:
@@ -99,20 +147,74 @@ export const ThreeScene = React.memo((props: ThreeSceneProps) => {
     if (props.cameraFocus === 'earth') {
       isFollowingEarth.current = true;
       isFollowingSun.current = false;
+      isFollowingMercury.current = false;
+      isFollowingVenus.current = false;
+      isFollowingMars.current = false;
       props.setDisplayAboutMePage(true);
       props.setDisplayAboutThisProjectPage(false);
       props.setDisplayPlanetNavigationComponent(false);
+      props.setDisplayFranceTravailPage(false);
+      props.setDisplayAdemiPage(false);
+      props.setDisplayMichelinPage(false);
     } else if (props.cameraFocus === 'sun') {
       isFollowingEarth.current = false;
       isFollowingSun.current = true;
+      isFollowingMars.current = false;
+      isFollowingMercury.current = false;
+      isFollowingVenus.current = false;
       props.setDisplayAboutThisProjectPage(true);
       props.setDisplayAboutMePage(false);
       props.setDisplayPlanetNavigationComponent(false);
+      props.setDisplayFranceTravailPage(false);
+      props.setDisplayAdemiPage(false);
+      props.setDisplayMichelinPage(false);
+    } else if (props.cameraFocus === 'mars') {
+      isFollowingMars.current = true;
+      isFollowingSun.current = false;
+      isFollowingEarth.current = false;
+      isFollowingMercury.current = false;
+      isFollowingVenus.current = false;
+      props.setDisplayFranceTravailPage(true);
+      props.setDisplayAboutThisProjectPage(false);
+      props.setDisplayAboutMePage(false);
+      props.setDisplayPlanetNavigationComponent(false);
+      props.setDisplayAdemiPage(false);
+      props.setDisplayMichelinPage(false);
+    } else if (props.cameraFocus === 'mercury') {
+      isFollowingMercury.current = true;
+      isFollowingVenus.current = false;
+      isFollowingEarth.current = false;
+      isFollowingSun.current = false;
+      isFollowingMars.current = false;
+      props.setDisplayAdemiPage(true);
+      props.setDisplayPlanetNavigationComponent(false);
+      props.setDisplayMichelinPage(false);
+      props.setDisplayFranceTravailPage(false);
+      props.setDisplayAboutMePage(false);
+      props.setDisplayAboutThisProjectPage(false);
+    } else if (props.cameraFocus === 'venus') {
+      isFollowingVenus.current = true;
+      isFollowingMercury.current = false;
+      isFollowingEarth.current = false;
+      isFollowingSun.current = false;
+      isFollowingMars.current = false;
+      props.setDisplayMichelinPage(true);
+      props.setDisplayPlanetNavigationComponent(false);
+      props.setDisplayAdemiPage(false);
+      props.setDisplayFranceTravailPage(false);
+      props.setDisplayAboutMePage(false);
+      props.setDisplayAboutThisProjectPage(false);
     } else {
       isFollowingEarth.current = false;
       isFollowingSun.current = false;
+      isFollowingMercury.current = false;
+      isFollowingVenus.current = false;
+      isFollowingMars.current = false;
       props.setDisplayAboutMePage(false);
       props.setDisplayAboutThisProjectPage(false);
+      props.setDisplayFranceTravailPage(false);
+      props.setDisplayAdemiPage(false);
+      props.setDisplayMichelinPage(false);
       props.setDisplayPlanetNavigationComponent(true);
     }
   }, [props.cameraFocus, props]);
@@ -121,19 +223,43 @@ export const ThreeScene = React.memo((props: ThreeSceneProps) => {
   const animate = React.useCallback(() => {
     animationFrameId.current = requestAnimationFrame(animate);
 
-    earthMesh.rotation.y += 0.001;
-    earthCloudsMesh.rotation.y += 0.0017;
-    sunMesh.rotation.y += 0.0005;
+    // Planet rotation
+    //TODO: Change rotation to counter clockwise of all planets except Venus
+    mercuryMesh.rotation.y -= 0.002;
+    venusMesh.rotation.y -= 0.006;
+    earthMesh.rotation.y -= 0.001;
+    earthCloudsMesh.rotation.y -= 0.0017;
+    sunMesh.rotation.y -= 0.0005;
+    marsMesh.rotation.y -= 0.0008;
 
-    // Earth and atmosphere rotation
-    const earthDistance = 50;
-    const updatePosition = (mesh: THREE.Mesh, distance: number) => {
+    //TODO: Create a single function for this
+    const updateEarthPosition = (mesh: THREE.Mesh, distance: number) => {
       mesh.position.x = distance * Math.cos(earthMesh.rotation.y);
       mesh.position.z = distance * Math.sin(earthMesh.rotation.y);
     };
-    updatePosition(earthMesh, earthDistance);
-    updatePosition(earthCloudsMesh, earthDistance);
-    updatePosition(earthAtmosphereMesh, earthDistance);
+
+    const updateMarsPosition = (mesh: THREE.Mesh, distance: number) => {
+      mesh.position.x = distance * Math.cos(marsMesh.rotation.y);
+      mesh.position.z = distance * Math.sin(marsMesh.rotation.y);
+    };
+
+    const updateMercuryPosition = (mesh: THREE.Mesh, distance: number) => {
+      mesh.position.x = distance * Math.cos(mercuryMesh.rotation.y);
+      mesh.position.z = distance * Math.sin(mercuryMesh.rotation.y);
+    };
+
+    //Venus is a special case because of its rotation
+    const updateVenusPosition = (mesh: THREE.Mesh, distance: number) => {
+      mesh.position.x = distance * Math.cos(venusMesh.rotation.y);
+      mesh.position.z = distance * Math.sin(venusMesh.rotation.y);
+    };
+
+    updateMercuryPosition(mercuryMesh, mercuryDistance);
+    updateVenusPosition(venusMesh, venusDistance);
+    updateEarthPosition(earthMesh, earthDistance);
+    updateEarthPosition(earthCloudsMesh, earthDistance);
+    updateEarthPosition(earthAtmosphereMesh, earthDistance);
+    updateMarsPosition(marsMesh, marsDistance);
 
     // Camera following logic
     const updateCameraFollow = (targetMesh: THREE.Mesh, distance: number) => {
@@ -146,11 +272,17 @@ export const ThreeScene = React.memo((props: ThreeSceneProps) => {
       updateCameraFollow(sunMesh, 40);
     } else if (isFollowingEarth.current) {
       updateCameraFollow(earthMesh, 3);
+    } else if (isFollowingMars.current) {
+      updateCameraFollow(marsMesh, 2);
+    } else if (isFollowingMercury.current) {
+      updateCameraFollow(mercuryMesh, 2);
+    } else if (isFollowingVenus.current) {
+      updateCameraFollow(venusMesh, 3);
     }
 
     controls.update();
     renderer.render(scene, camera);
-  }, [camera, controls, earthMesh, earthCloudsMesh, earthAtmosphereMesh, sunMesh, renderer, scene]);
+  }, [camera, controls, mercuryMesh, venusMesh, marsMesh, earthMesh, earthCloudsMesh, earthAtmosphereMesh, sunMesh, renderer, scene]);
 
   // Scene initialization
   useEffect(() => {
@@ -163,6 +295,9 @@ export const ThreeScene = React.memo((props: ThreeSceneProps) => {
     controls.enablePan = false;
 
     sunMesh.scale.set(10, 10, 10);
+    mercuryMesh.scale.set(0.38, 0.38, 0.38);
+    venusMesh.scale.set(0.95, 0.95, 0.95);
+    marsMesh.scale.set(0.53, 0.53, 0.53);
 
     earthMesh.renderOrder = 0;
     earthCloudsMesh.renderOrder = 1;
@@ -171,16 +306,37 @@ export const ThreeScene = React.memo((props: ThreeSceneProps) => {
     earthMesh.rotation.x = 0.23;
     earthCloudsMesh.rotation.x = 0.23;
 
+    marsMesh.rotation.x = 0.252;
+
+    mercuryMesh.rotation.x = 0.03;
+    venusMesh.rotation.x = 0;
+
     earthMesh.position.x = earthDistance;
     earthCloudsMesh.position.x = earthDistance;
     earthAtmosphereMesh.position.x = earthDistance;
 
+    marsMesh.position.x = marsDistance;
+
+    mercuryMesh.position.x = mercuryDistance;
+
+    venusMesh.position.x = venusDistance;
+
     starBackgroundMesh.rotation.x = 60.2;
+
+    mercuryMesh.castShadow = true;
+    mercuryMesh.receiveShadow = true;
+
+    venusMesh.castShadow = true;
+    venusMesh.receiveShadow = true;
 
     earthMesh.castShadow = true;
     earthCloudsMesh.castShadow = true;
     earthMesh.receiveShadow = true;
     earthCloudsMesh.receiveShadow = true;
+
+    marsMesh.castShadow = true;
+    marsMesh.receiveShadow = true;
+
     sunLight.castShadow = true;
 
     sunMesh.add(sunLight);
@@ -188,9 +344,15 @@ export const ThreeScene = React.memo((props: ThreeSceneProps) => {
     earthMesh.name = 'earth';
     earthCloudsMesh.name = 'earthClouds';
     earthAtmosphereMesh.name = 'earthAtmosphere';
+    marsMesh.name = 'mars';
     sunMesh.name = 'sun';
+    mercuryMesh.name = 'mercury';
+    venusMesh.name = 'venus';
 
     scene.add(sunLight);
+    scene.add(mercuryMesh);
+    scene.add(venusMesh);
+    scene.add(marsMesh);
     scene.add(earthMesh);
     scene.add(earthCloudsMesh);
     scene.add(earthAtmosphereMesh);
@@ -212,6 +374,15 @@ export const ThreeScene = React.memo((props: ThreeSceneProps) => {
       } else if (isFollowingSun.current) {
         const relativePosition = camera.position.clone().sub(sunMesh.position);
         camera.position.copy(sunMesh.position.clone().add(relativePosition));
+      } else if (isFollowingMars.current) {
+        const relativePosition = camera.position.clone().sub(marsMesh.position);
+        camera.position.copy(marsMesh.position.clone().add(relativePosition));
+      } else if (isFollowingMercury.current) {
+        const relativePosition = camera.position.clone().sub(mercuryMesh.position);
+        camera.position.copy(mercuryMesh.position.clone().add(relativePosition));
+      } else if (isFollowingVenus.current) {
+        const relativePosition = camera.position.clone().sub(venusMesh.position);
+        camera.position.copy(venusMesh.position.clone().add(relativePosition));
       }
     });
     animate();
@@ -220,7 +391,7 @@ export const ThreeScene = React.memo((props: ThreeSceneProps) => {
       window.removeEventListener('resize', handleResize);
       if (animationFrameId.current) cancelAnimationFrame(animationFrameId.current);
     };
-  }, [renderer, scene, sunMesh, sunLight, earthMesh, earthCloudsMesh, earthAtmosphereMesh, starBackgroundMesh, handleResize, animate, controls, camera.position, handleClick]);
+  }, [renderer, scene, sunMesh, sunLight, mercuryMesh, venusMesh, marsMesh, earthMesh, earthCloudsMesh, earthAtmosphereMesh, starBackgroundMesh, handleResize, animate, controls, camera.position, handleClick]);
 
   return <div ref={containerRef} />;
 });
