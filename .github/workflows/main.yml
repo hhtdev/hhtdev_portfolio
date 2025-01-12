@@ -34,5 +34,9 @@ jobs:
           username: ${{ secrets.VPS_USERNAME }}
           password: ${{ secrets.VPS_PASSWORD }}
           port: ${{ secrets.VPS_PORT }}
-          script: whoami
+          script: |
+            docker pull hhtdev/hhtdev_portfolio:latest
+            docker stop hhtdev_portfolio || true
+            docker rm hhtdev_portfolio || true
+            docker run -d --name hhtdev_portfolio -p 3000:3000 hhtdev/hhtdev_portfolio:latest
 
