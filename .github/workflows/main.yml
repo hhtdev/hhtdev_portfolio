@@ -27,7 +27,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     steps:
-      - name: Remote SSH
+      - name: Remote SSH pull, stop and run
         uses: appleboy/ssh-action@v1.2.0
         with:
           host: ${{ secrets.VPS_HOST }}
