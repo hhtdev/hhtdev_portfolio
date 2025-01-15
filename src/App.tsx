@@ -18,6 +18,7 @@ const App: React.FC = () => {
   const [cameraFocus, setCameraFocus] = React.useState<string>('default');
 
   return (
+    //TODO: Add a loader and display AboutThisProjectPage by default as a welcome page
     <div className='app'>
       <AboutThisProjectPage
         display={displayAboutThisProjectPage}
