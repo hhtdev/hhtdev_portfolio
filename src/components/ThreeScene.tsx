@@ -27,7 +27,7 @@ export const ThreeScene = React.memo((props: ThreeSceneProps) => {
   // Scene, Camera, Renderer
   const scene = React.useMemo(() => new THREE.Scene(), []);
   const camera = React.useMemo(() => new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 5000), []);
-  camera.position.set(30, 0, 0);
+  camera.position.set(40, 0, 0);
   const renderer = React.useMemo(() => new THREE.WebGLRenderer({ antialias: true }), []);
   const controls = React.useMemo(() => new OrbitControls(camera, renderer.domElement), [camera, renderer.domElement]);
 

@@ -15,10 +15,11 @@ const App: React.FC = () => {
   const [displayAboutThisProjectPage, setDisplayAboutThisProjectPage] = React.useState(false);
   const [displayFranceTravailPage, setDisplayFranceTravailPage] = React.useState(false);
   const [displayPlanetNavigationComponent, setDisplayPlanetNavigationComponent] = React.useState(true);
-  const [cameraFocus, setCameraFocus] = React.useState<string>('default');
+  //Default page is the AboutThisProjectPage
+  const [cameraFocus, setCameraFocus] = React.useState<string>('sun');
 
   return (
-    //TODO: Add a loader and display AboutThisProjectPage by default as a welcome page
+    //TODO: Add a loader before the ThreeScene is loaded
     <div className='app'>
       <AboutThisProjectPage
         display={displayAboutThisProjectPage}

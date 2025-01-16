@@ -1,0 +1,14 @@
+.about-project-img-link-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: 1fr;
+
+  .about-project-img-link {
+    //grid-area: 1 / 2 / 2 / 4;
+  }
+
+  img {
+    width: 30%;
+  }
+
+}
