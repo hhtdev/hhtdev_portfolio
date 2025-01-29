@@ -34,6 +34,7 @@ export const AdemiPage: React.FC<AdemiProps> = (AdemiProps) => {
       <div className="containers-pages-grid">
         <div className="containers-pages-content-left containers">
           <h1>Première expérience en alternance</h1>
+          <p>En 2018, peu de temps avant l'examen de mon BTS SIO (Services Informatiques aux Organisations), je commence à activement chercher une alternance pour poursuivre mes études</p>
           <h2>Ademi Pesage</h2>
           <p>
             Présentation rapide avec un lien et le logo ?

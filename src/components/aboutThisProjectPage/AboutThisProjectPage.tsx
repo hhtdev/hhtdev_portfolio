@@ -55,7 +55,7 @@ export const AboutThisProjectPage: React.FC<AboutThisProjectProps> = (AboutThisP
           <p>
             Lancez-vous en fermant cette page en bas de votre écran !
           </p>
-          <h2>L'idée derrière ce projet</h2>
+          <h2>L'idée derrière ce projet :</h2>
           <h3>Pourquoi</h3>
           <p>
             Sans surprise, je suis passionné par l'espace et l'aérospatial en règle générale,
@@ -70,7 +70,7 @@ export const AboutThisProjectPage: React.FC<AboutThisProjectProps> = (AboutThisP
             mais également pour le commun des mortels qui cherche simplement à en savoir un peu plus sur moi.
             C'est quelque chose sur lequel je travaille systématiquement sur ce portfolio, et qui je l'espère, vous plaira !
           </p>
-          <h2>Les technologies utilisées</h2>
+          <h2>Les technologies utilisées :</h2>
           <p>
             Ce projet utilise les technologies suivantes :
             <ul>
@@ -93,18 +93,9 @@ export const AboutThisProjectPage: React.FC<AboutThisProjectProps> = (AboutThisP
               <a href="https://github.com/hhtdev" target="_blank"><img className="about-project-img" src="./github.png" alt="Lien de redirection vers le profil Github de Hugo" /></a>
             </div>
           </div>
-
-          <h2>GitHub</h2>
+          <h2>Mon CV :</h2>
           <p>
-            Le lien ici
-          </p>
-          <h2>Twitter</h2>
-          <p>
-            Le lien ici (ouais nan peut-être pas en fait)
-          </p>
-          <h2>Mon CV quelque part ici</h2>
-          <p>
-            Le lien ici
+            Ici quand il sera prêt 😅
           </p>
         </div>
         <div className="containers-btn-return-orbit">

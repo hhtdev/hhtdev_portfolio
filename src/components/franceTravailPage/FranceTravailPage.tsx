@@ -34,6 +34,7 @@ export const FranceTravailPage: React.FC<FranceTravailProps> = (FranceTravailPro
       <div className="containers-pages-grid">
         <div className="containers-pages-content-left containers">
           <h1>Pôle emploi</h1>
+          <p>C'est ma première expérience pro après mes études</p>
           <h2>Compétences Validées</h2>
           <p>
             Présentation rapide avec un lien et le logo ?
@@ -53,6 +54,7 @@ export const FranceTravailPage: React.FC<FranceTravailProps> = (FranceTravailPro
         </div>
         <div className="containers-pages-content-right containers">
           <h1>France Travail</h1>
+          <p>Jouer dans la cours des grands</p>
           <h2>francetravail.io</h2>
           <p>
             Qu'est-ce que c'est ?

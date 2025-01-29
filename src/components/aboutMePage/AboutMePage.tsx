@@ -36,20 +36,20 @@ export const AboutMePage: React.FC<MeProps> = (MeProps) => {
           <h1>Le dev derrière ce portfolio</h1>
           <h2>Présentation rapide</h2>
           <p>
-            Hugo bla bla bla, il est dev tavu. Probablement moyen de glisser une petite photo ici
+            Une petite présentation de moi et une petite photo
           </p>
           <h2>Ce que la garçon aime bien dans la vie</h2>
           <p>
             Plein de trucs à dire ici, à commencer par le dev évidemment
           </p>
           <p>
-            Il aime aussi l'espace de manière évidente
+            Il aime aussi l'espace (personne ne l'avait vu venir)
           </p>
           <p>
-            Il aime aussi les jeux vidéos, hyepr original hein ?
+            Il aime aussi les jeux vidéos, ce qui est carrément inattendu
           </p>
           <p>
-            On parle pas en mal de Baldur's gate 3 svp
+            Son jeu favori c'est BG3 parce que c'est incroyable, et que tout autre avis est incorrect.
           </p>
         </div>
         <div className="containers-pages-content-right containers">
@@ -62,13 +62,13 @@ export const AboutMePage: React.FC<MeProps> = (MeProps) => {
             CDA
           </p>
           <p>
-            Et il aimerait bien faire passer des master aussi !
+            Et il aimerait bien faire passer des masters aussi un jour !
           </p>
           <h2>Pour des simu d'entretien </h2>
           <p>Avec Ada techschool notamment</p>
           <h2>Il présente son métier</h2>
-          <p>Comme dans son ancien campus</p>
-          <p>Mais aussi quand il s'adresse à d'autres dev comme là avec son tech lunch sur les outils d'IA à destination des devs</p>
+          <p>Comme dans son ancien campus auprès des 1ère années en développement</p>
+          <p>Mais aussi quand il s'adresse à d'autres dev comme avec son tech lunch sur les outils d'IA à destination des devs, ou encore quand il parle de green IT.</p>
         </div>
         <div className="containers-btn-return-orbit">
           <button className="btn-return-orbit" onClick={() => { displayPageContent(false) }}><BackToOrbitComponent display={true} /></button>
