@@ -50,7 +50,7 @@ export const AboutThisProjectPage: React.FC<AboutThisProjectProps> = (AboutThisP
           <p>
             Vous vous trouvez actuellement en orbite autour du soleil, qui est l'astre sur lequel j'évoque tout ce qui tourne autour de ce projet, et de mes ambitions concernant ce dernier.
             Mais vous pouvez également vous rendre sur les autres astres via le menu de naviguation, ou en cliquant sur les planètes qui vous entourent (si vous êtes sur un ordinateur).
-            Chaque élément de ce système vous permmetera de découvrir un aspect de ma vie professionnelle, ou personnelle !
+            Chaque élément de ce système vous permettra de découvrir un aspect de ma vie professionnelle, ou personnelle !
           </p>
           <p>
             Lancez-vous en fermant cette page en bas de votre écran !
