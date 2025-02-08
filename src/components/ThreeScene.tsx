@@ -58,7 +58,6 @@ export const ThreeScene = React.memo((props: ThreeSceneProps) => {
     venus: new THREE.MeshStandardMaterial({ map: textures.venus }),
     earth: new THREE.MeshStandardMaterial({ map: textures.earth }),
     clouds: new THREE.MeshStandardMaterial({ map: textures.earthClouds, transparent: true, opacity: 0.9 }),
-    atmosphere: new THREE.MeshStandardMaterial({ color: 0x00b3ff, emissive: 0x00b3ff, transparent: true, opacity: 0.1 }),
     sun: new THREE.MeshBasicMaterial({ map: textures.sun }),
     mars: new THREE.MeshStandardMaterial({ map: textures.mars }),
     stars: new THREE.MeshBasicMaterial({ map: textures.stars, side: THREE.BackSide }),
@@ -129,7 +128,7 @@ export const ThreeScene = React.memo((props: ThreeSceneProps) => {
           props.setDisplayMichelinPage(true);
           props.setDisplayPlanetNavigationComponent(false);
           break;
-        case 'earthAtmosphere':
+        case 'earthClouds':
           console.log('Earth clicked');
           isFollowingEarth.current = true;
           isFollowingSun.current = false;
