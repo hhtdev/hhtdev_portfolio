@@ -23,6 +23,13 @@ export const ThreeScene = React.memo((props: ThreeSceneProps) => {
   const isFollowingSun = useRef(false);
   const isFollowingMars = useRef(false);
   const userControlActive = useRef(false);
+  const zoomLevel = useRef({
+    current: 1,
+    max: 3,
+    min: 0.5,
+    zoomFactor: 0.05,
+  });
+  const previousDistance = React.useRef<number | null>(null);
 
   // Scene, Camera, Renderer
   const scene = React.useMemo(() => new THREE.Scene(), []);
@@ -49,8 +56,8 @@ export const ThreeScene = React.memo((props: ThreeSceneProps) => {
   const materials = React.useMemo(() => ({
     mercury: new THREE.MeshStandardMaterial({ map: textures.mercury }),
     venus: new THREE.MeshStandardMaterial({ map: textures.venus }),
-    earth: new THREE.MeshStandardMaterial({ map: textures.earth, depthTest: true }),
-    clouds: new THREE.MeshStandardMaterial({ map: textures.earthClouds, transparent: true, depthTest: false }),
+    earth: new THREE.MeshStandardMaterial({ map: textures.earth }),
+    clouds: new THREE.MeshStandardMaterial({ map: textures.earthClouds, transparent: true, opacity: 0.9 }),
     atmosphere: new THREE.MeshStandardMaterial({ color: 0x00b3ff, emissive: 0x00b3ff, transparent: true, opacity: 0.1 }),
     sun: new THREE.MeshBasicMaterial({ map: textures.sun }),
     mars: new THREE.MeshStandardMaterial({ map: textures.mars }),
@@ -59,9 +66,16 @@ export const ThreeScene = React.memo((props: ThreeSceneProps) => {
 
   const mercuryMesh = React.useMemo(() => new THREE.Mesh(planetGeometry, materials.mercury), [planetGeometry, materials.mercury]);
   const venusMesh = React.useMemo(() => new THREE.Mesh(planetGeometry, materials.venus), [planetGeometry, materials.venus]);
-  const earthMesh = React.useMemo(() => new THREE.Mesh(planetGeometry, materials.earth), [planetGeometry, materials.earth]);
-  const earthCloudsMesh = React.useMemo(() => new THREE.Mesh(planetGeometry, materials.clouds), [planetGeometry, materials.clouds]);
-  const earthAtmosphereMesh = React.useMemo(() => new THREE.Mesh(planetAtmosphereGeometry, materials.atmosphere), [planetAtmosphereGeometry, materials.atmosphere]);
+  const earthMesh = React.useMemo(() => {
+    const mesh = new THREE.Mesh(planetGeometry, materials.earth);
+    mesh.renderOrder = 1; // Ensure Earth renders before the clouds
+    return mesh;
+  }, [planetGeometry, materials.earth]);
+  const earthCloudsMesh = React.useMemo(() => {
+    const mesh = new THREE.Mesh(planetAtmosphereGeometry, materials.clouds);
+    mesh.renderOrder = 2; // Ensure clouds render after the Earth
+    return mesh;
+  }, [planetAtmosphereGeometry, materials.clouds]);
   const sunMesh = React.useMemo(() => new THREE.Mesh(planetGeometry, materials.sun), [planetGeometry, materials.sun]);
   const marsMesh = React.useMemo(() => new THREE.Mesh(planetGeometry, materials.mars), [planetGeometry, materials.mars]);
   const starBackgroundMesh = React.useMemo(() => new THREE.Mesh(starBackgroundGeometry, materials.stars), [starBackgroundGeometry, materials.stars]);
@@ -146,6 +160,49 @@ export const ThreeScene = React.memo((props: ThreeSceneProps) => {
       }
     }
   }, [camera, scene.children, props]);
+
+  const checkMinMaxZoomLevel = (nextZoomLevel: number): boolean => {
+    if (nextZoomLevel < zoomLevel.current.min || nextZoomLevel > zoomLevel.current.max) {
+      return false;
+    }
+    return true;
+  }
+
+  // Zoom logic for mouse wheel
+  const handleZoom = React.useCallback((event: WheelEvent) => {
+    if (event.deltaY > 0) {
+      if (checkMinMaxZoomLevel(zoomLevel.current.current + zoomLevel.current.zoomFactor)) {
+        zoomLevel.current.current += zoomLevel.current.zoomFactor;
+      }
+      return;
+    }
+    if (checkMinMaxZoomLevel(zoomLevel.current.current - zoomLevel.current.zoomFactor)) {
+      zoomLevel.current.current -= zoomLevel.current.zoomFactor
+    }
+  }, []);
+
+  // Zoom logic for touch events (mobile pinch)
+  const handleZoomTouch = React.useCallback((event: TouchEvent) => {
+    if (event.touches.length === 2) {
+      const touch1 = event.touches[0];
+      const touch2 = event.touches[1];
+      const distance = Math.sqrt((touch1.clientX - touch2.clientX) ** 2 + (touch1.clientY - touch2.clientY) ** 2);
+
+      if (previousDistance.current !== null) {
+        if (distance > previousDistance.current && checkMinMaxZoomLevel(zoomLevel.current.current - zoomLevel.current.zoomFactor)) {
+          // Pinch out (zoom in)
+          zoomLevel.current.current -= zoomLevel.current.zoomFactor;
+        } else if (distance < previousDistance.current && checkMinMaxZoomLevel(zoomLevel.current.current + zoomLevel.current.zoomFactor)) {
+          // Pinch in (zoom out)
+          zoomLevel.current.current += zoomLevel.current.zoomFactor;
+        }
+      }
+
+      previousDistance.current = distance;
+    } else {
+      previousDistance.current = null;
+    }
+  }, []);
 
   // Camera focus logic
   useEffect(() => {
@@ -275,31 +332,30 @@ export const ThreeScene = React.memo((props: ThreeSceneProps) => {
     updateVenusPosition(venusMesh, venusDistance);
     updateEarthPosition(earthMesh, earthDistance);
     updateEarthCloudsAndAtmospherePosition(earthCloudsMesh, earthDistance);
-    updateEarthCloudsAndAtmospherePosition(earthAtmosphereMesh, earthDistance);
     updateMarsPosition(marsMesh, marsDistance);
 
     // Camera following logic
-    const updateCameraFollow = (targetMesh: THREE.Mesh, distance: number) => {
-      const offset = camera.position.clone().sub(controls.target).normalize().multiplyScalar(distance);
+    const updateCameraFollow = (targetMesh: THREE.Mesh, distance: number, zoomLevel: number) => {
+      const offset = camera.position.clone().sub(controls.target).normalize().multiplyScalar(distance * zoomLevel);
       controls.target.copy(targetMesh.position);
       camera.position.copy(targetMesh.position.clone().add(offset));
     };
 
     if (isFollowingSun.current) {
-      updateCameraFollow(sunMesh, 40);
+      updateCameraFollow(sunMesh, 40, zoomLevel.current.current);
     } else if (isFollowingEarth.current) {
-      updateCameraFollow(earthMesh, 3);
+      updateCameraFollow(earthMesh, 3, zoomLevel.current.current);
     } else if (isFollowingMars.current) {
-      updateCameraFollow(marsMesh, 2);
+      updateCameraFollow(marsMesh, 2, zoomLevel.current.current);
     } else if (isFollowingMercury.current) {
-      updateCameraFollow(mercuryMesh, 2);
+      updateCameraFollow(mercuryMesh, 2, zoomLevel.current.current);
     } else if (isFollowingVenus.current) {
-      updateCameraFollow(venusMesh, 3);
+      updateCameraFollow(venusMesh, 3, zoomLevel.current.current);
     }
 
     controls.update();
     renderer.render(scene, camera);
-  }, [camera, controls, mercuryMesh, venusMesh, marsMesh, earthMesh, earthCloudsMesh, earthAtmosphereMesh, sunMesh, renderer, scene]);
+  }, [camera, controls, mercuryMesh, venusMesh, marsMesh, earthMesh, earthCloudsMesh, sunMesh, renderer, scene]);
 
   // Scene initialization
   useEffect(() => {
@@ -316,12 +372,10 @@ export const ThreeScene = React.memo((props: ThreeSceneProps) => {
     venusMesh.scale.set(0.95, 0.95, 0.95);
     marsMesh.scale.set(0.53, 0.53, 0.53);
 
-    earthMesh.renderOrder = 0;
-    earthCloudsMesh.renderOrder = 1;
 
     //TODO: Check this, it feels wrong
-    earthMesh.rotation.x = -0.23;
-    earthCloudsMesh.rotation.x = -0.23;
+    earthMesh.rotation.x = -0.20;
+    earthCloudsMesh.rotation.x = -0.20;
 
     marsMesh.rotation.x = -0.252;
 
@@ -330,7 +384,6 @@ export const ThreeScene = React.memo((props: ThreeSceneProps) => {
 
     earthMesh.position.x = earthDistance;
     earthCloudsMesh.position.x = earthDistance;
-    earthAtmosphereMesh.position.x = earthDistance;
 
     marsMesh.position.x = marsDistance;
 
@@ -360,7 +413,6 @@ export const ThreeScene = React.memo((props: ThreeSceneProps) => {
 
     earthMesh.name = 'earth';
     earthCloudsMesh.name = 'earthClouds';
-    earthAtmosphereMesh.name = 'earthAtmosphere';
     marsMesh.name = 'mars';
     sunMesh.name = 'sun';
     mercuryMesh.name = 'mercury';
@@ -372,12 +424,13 @@ export const ThreeScene = React.memo((props: ThreeSceneProps) => {
     scene.add(marsMesh);
     scene.add(earthMesh);
     scene.add(earthCloudsMesh);
-    scene.add(earthAtmosphereMesh);
     scene.add(sunMesh);
     scene.add(starBackgroundMesh);
 
     window.addEventListener('resize', handleResize);
     window.addEventListener('click', handleClick);
+    window.addEventListener('wheel', handleZoom);
+    window.addEventListener('touchmove', handleZoomTouch);
     controls.addEventListener('start', () => {
       userControlActive.current = true;
     });
@@ -408,7 +461,7 @@ export const ThreeScene = React.memo((props: ThreeSceneProps) => {
       window.removeEventListener('resize', handleResize);
       if (animationFrameId.current) cancelAnimationFrame(animationFrameId.current);
     };
-  }, [renderer, scene, sunMesh, sunLight, mercuryMesh, venusMesh, marsMesh, earthMesh, earthCloudsMesh, earthAtmosphereMesh, starBackgroundMesh, handleResize, animate, controls, camera.position, handleClick]);
+  }, [renderer, scene, sunMesh, sunLight, mercuryMesh, venusMesh, marsMesh, earthMesh, earthCloudsMesh, starBackgroundMesh, handleResize, animate, controls, camera.position, handleClick, handleZoom, handleZoomTouch]);
 
   return <div ref={containerRef} />;
 });
